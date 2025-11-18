@@ -179,7 +179,6 @@ while ($row = $airport_query->fetch_assoc()) {
     <form action="flight_search.php" method="POST">
         <h2 style="text-align:center; ">Find your Flights</h2>
 
-        <!-- Source Dropdown -->
         <label>Source:</label>
         <div class="custom-select" id="sourceSelect">
             <div class="select-selected">Select Source</div>
@@ -194,7 +193,6 @@ while ($row = $airport_query->fetch_assoc()) {
             <input type="hidden" name="source">
         </div>
 
-        <!-- Destination Dropdown -->
         <label>Destination:</label>
         <div class="custom-select" id="destinationSelect">
             <div class="select-selected">Select Destination</div>
