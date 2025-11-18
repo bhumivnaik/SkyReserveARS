@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Libertinus+Serif:wght@400;600;700&display=swap');
+
+    :root {
+        --dark-blue: #0d4b75ff;
+        --second-blue: #2c81baff;
+        --third-blue: #35acfcff;
+        --gray-colour: #465f6dff;
+        --white-color-light: #F4F4F4;
+    }
+
+    body {
+        font-family: Cambria, serif;
+        background: linear-gradient(to right, var(--dark-blue), var(--second-blue));
+        padding: 60px;
+        margin: 0;
+    }
+
+    .confirm-card {
+        max-width: 550px;
+        margin: auto;
+        background: var(--white-color-light);
+        padding: 35px;
+        border-radius: 18px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+        text-align: center;
+        font-family: "Libertinus Serif";
+        color: var(--dark-blue);
+        margin-bottom: 25px;
+    }
+
+    .summary-box,
+    .flight-box {
+        background: #efefef;
+        padding: 18px 22px;
+        border-radius: 12px;
+        border: 1px solid var(--second-blue);
+        border-left: 6px solid var(--second-blue);
+        margin-bottom: 22px;
+    }
+
+    .box-title {
+        font-size: 14px;
+        text-transform: uppercase;
+        color: var(--second-blue);
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .detail-row {
+        font-size: 16px;
+        color: var(--gray-colour);
+        margin: 5px 0;
+    }
+
+    .btn-download {
+        display: block;
+        text-align: center;
+        padding: 14px;
+        margin-top: 20px;
+        background: linear-gradient(135deg, var(--second-blue), var(--dark-blue));
+        color: white;
+        font-size: 18px;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .btn-download:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 22px rgba(53, 172, 252, 0.45);
+    }
+
+    .confirm-header h2 {
+            font-size: 35px;
+            margin-bottom: 5px;
+            color: var(--dark-blue);
+        }
+
+        .confirm-header span {
+            color: #2ecc71;
+            font-size: 30px;
+        }
+
+        .confirm-header p {
+            font-size: 16px;
+            color: var(--second-blue);
+            margin-bottom: 20px;
+        }
+
+        .confirm-footer h3 {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--dark-blue);
+            font-weight: bold;
+        }
+
+        .confirm-back {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .confirm-back a {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--second-blue), var(--dark-blue));
+            color: white;
+            padding: 12px 28px;
+            font-size: 17px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: 0.25s ease;
+        }
+
+        .confirm-back a:hover {
+            transform: scale(1.07);
+            background: linear-gradient(135deg, var(--dark-blue), var(--second-blue));
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+</style>
+
+
+<div class="confirm-card">
+<div class="confirm-header">
+            <h2>Booking Confirmed <span>✔</span></h2>
+            <p>Your journey begins now!</p>
+        </div>
+    <!-- TOP SUMMARY BOX -->
+    <div class="summary-box">
+        <div class="box-title">Booking Summary</div>
+
+        <div class="detail-row"><b>Payment ID:</b> <?= $pay_id ?></div>
+        <div class="detail-row"><b>Trip Type:</b> <?= strtoupper($trip_type) ?></div>
+        <div class="detail-row"><b>Total Passengers:</b> <?= $qty ?></div>
+        <div class="detail-row"><b>Total Amount Paid:</b> ₹<?= $total ?></div>
+    </div>
+
+    <!-- OUTBOUND FLIGHT DETAILS -->
+    <div class="flight-box">
+        <div class="box-title">Outbound Flight Details</div>
+
+        <div class="detail-row"><b>Flight ID:</b> <?= $out_flight_id ?></div>
+    <div class="detail-row"><b>Source:</b> <?= $outData['source'] ?></div>
+    <div class="detail-row"><b>Destination:</b> <?= $outData['destination'] ?></div>
+    <div class="detail-row"><b>Departure Time:</b> <?= $outData['dep_time'] ?></div>
+    <div class="detail-row"><b>Arrival Time:</b> <?= $outData['arr_time'] ?></div>
+    <div class="detail-row"><b>Date:</b> <?= $date ?></div>
+    </div>
+
+    <!-- RETURN FLIGHT DETAILS (only if two-way) -->
+    <?php if ($trip_type == "twoway") { ?>
+        <div class="flight-box">
+            <div class="box-title">Return Flight Details</div>
+
+            <div class="detail-row"><b>Flight ID:</b> <?= $ret_flight_id ?></div>
+        <div class="detail-row"><b>Source:</b> <?= $retData['source'] ?></div>
+        <div class="detail-row"><b>Destination:</b> <?= $retData['destination'] ?></div>
+        <div class="detail-row"><b>Departure Time:</b> <?= $retData['dep_time'] ?></div>
+        <div class="detail-row"><b>Arrival Time:</b> <?= $retData['arr_time'] ?></div>
+        <div class="detail-row"><b>Date:</b> <?= $ret_date ?></div>
+        </div>
+    <?php } ?>
+
+    <a class="btn-download" href="<?= $pdfFile ?>" download>
+        Download Ticket
+    </a>
+
+    <div class="confirm-footer">
+            <h3>Tickets sent to your registered email.</h3>
+        </div>
+
+        <div class="confirm-back">
+            <a href="http://localhost/airportrs/index.html">⟵ Back to Home</a>
+        </div>
+</div>
+
+</body>
+</html>
