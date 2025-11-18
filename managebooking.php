@@ -34,10 +34,10 @@ if (isset($_POST['search'])) {
         }
 
         body {
+            margin: 0;
             font-family: 'Cambria';
             background: linear-gradient(to right, var(--dark-blue), var(--second-blue));
-            padding: 50px;
-            margin-top: 60px;
+            padding: 0;
         }
 
         .video-bg {
@@ -61,6 +61,45 @@ if (isset($_POST['search'])) {
             backdrop-filter: blur(2px);
         }
 
+        /* ===== Navbar ===== */
+        nav {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;                 /* full width */
+            box-sizing: border-box;      /* include padding in width */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 5px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 2.5s ease;
+            margin: 0;
+        }
+
+        nav h1 {
+            font-size: 24px;
+            color: white; /*#0161a5ff;#60a5fa;*/
+            font-weight: bold;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        nav a {
+            color: #e0f2fe;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        nav a:hover {
+            color: #a7d0ff;
+            font-weight: bold;
+        }
+
         h2 {
             text-align: center;
             font-family: "Libertinus Serif";
@@ -73,8 +112,7 @@ if (isset($_POST['search'])) {
             max-width: 500px;
             background: var(--white-color-light);
             padding: 30px;
-            background: var(--white-color-light);
-            margin: 50px auto;
+            margin: 80px auto 50px auto; /* space below nav and centered */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(16, 91, 141, 0.4);
             color: var(--dark-blue);
@@ -128,6 +166,15 @@ if (isset($_POST['search'])) {
     </video>
     <div class="overlay"></div>
 
+    <!-- Navbar -->
+    <nav>
+        <h1>✈️ SkyReserve</h1>
+        <div>
+            <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
+            <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
+            <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
+        </div>
+    </nav>
 
     <div class="manage-container">
         <form method="POST">

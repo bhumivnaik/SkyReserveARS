@@ -27,9 +27,10 @@ while ($row = $airport_query->fetch_assoc()) {
         }
 
         body {
+            margin: 0;
             font-family: 'Cambria';
             background: linear-gradient(to right, var(--dark-blue), var(--second-blue));
-            padding: 50px;
+            padding: 0; /* remove side padding so nav can be full width */
             color: var(--white-color-light);
         }
 
@@ -61,10 +62,49 @@ while ($row = $airport_query->fetch_assoc()) {
             backdrop-filter: blur(2px);
         }
 
+        /* ===== Navbar ===== */
+        nav {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 5px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 2.5s ease;
+            margin: 0;
+        }
+
+        nav h1 {
+            font-size: 24px;
+            color: white; /*#0161a5ff;#60a5fa;*/
+            font-weight: bold;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        nav a {
+            color: #e0f2fe;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        nav a:hover {
+            color: #a7d0ff;
+            font-weight: bold;
+        }
+
         form {
             background: var(--white-color-light);
             max-width: 500px;
-            margin: 50px auto;
+            margin: 80px auto 50px auto; /* below nav + centered */
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(16, 91, 141, 0.4);
@@ -118,24 +158,22 @@ while ($row = $airport_query->fetch_assoc()) {
         .select-selected {
             background-color: var(--white-color-light);
             padding: 8px;
-            border: 1px solid #ccc;
             border-radius: 5px;
             cursor: pointer;
             color: var(--gray-colour);
             border: 1px solid var(--second-blue);
-
         }
 
         .select-items {
             position: absolute;
             background-color: var(--white-color-light);
-            border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 99;
             width: 100%;
             max-height: 150px;
             overflow-y: auto;
             display: none;
+            border: 1px solid var(--second-blue);
         }
 
         .select-items div {
@@ -174,10 +212,18 @@ while ($row = $airport_query->fetch_assoc()) {
     </video>
     <div class="overlay"></div>
 
-
+    <!-- Navbar -->
+    <nav>
+        <h1>✈️ SkyReserve</h1>
+        <div>
+            <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
+            <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
+            <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
+        </div>
+    </nav>
 
     <form action="flight_search.php" method="POST">
-        <h2 style="text-align:center; ">Find your Flights</h2>
+        <h2 style="text-align:center;">Find your Flights</h2>
 
         <!-- Source Dropdown -->
         <label>Source:</label>
@@ -214,14 +260,12 @@ while ($row = $airport_query->fetch_assoc()) {
             <div>
                 <label>Outbound Date</label>
                 <input type="date" name="date">
-
             </div>
             <div id="returnDiv">
                 <label>Return Date</label>
                 <input type="date" name="return_date">
             </div>
         </div>
-
 
         <input type="submit" value="Search Flights">
     </form>

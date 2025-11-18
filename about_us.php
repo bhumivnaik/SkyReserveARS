@@ -52,6 +52,44 @@ foreach ($stats as $key => $sql) {
             object-fit: cover;
             z-index: -2;
         }
+        /* ===== Navbar ===== */
+        nav {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 5px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 2.5s ease;
+            margin: 0;
+        }
+
+        nav h1 {
+            font-size: 24px;
+            color: white; /*#0161a5ff;#60a5fa;*/
+            font-weight: bold;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        nav a {
+            color: #e0f2fe;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        nav a:hover {
+            color: #a7d0ff;
+            font-weight: bold;
+        }
 
         /* Overlay */
         .overlay {
@@ -186,7 +224,14 @@ foreach ($stats as $key => $sql) {
 </head>
 
 <body>
-
+    <nav>
+        <h1>✈️ SkyReserve</h1>
+        <div>
+            <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
+            <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
+            <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
+        </div>
+    </nav>
     <!-- Background -->
     <video autoplay muted loop class="video-bg">
         <source src="From KlickPin CF [Video] timelapse of white clouds and blue sky di 2025 _ Desainsetyawandeddy050 (online-video-cutter.com).mp4" type="video/mp4">
