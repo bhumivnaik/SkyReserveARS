@@ -27,22 +27,6 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
 
     if ($result->num_rows > 0) {
         $booking = $result->fetch_assoc();
-
-        // 🔹 2) Aggregate: count total trips for this email
-        $count_sql = "SELECT COUNT(*) AS total_trips
-                      FROM booking b
-                      JOIN makes m ON m.booking_id = b.booking_id
-                      JOIN passenger p ON p.passenger_ID = m.passenger_ID
-                      WHERE p.email = ?";
-        $count_stmt = $conn->prepare($count_sql);
-        $count_stmt->bind_param("s", $email);
-        $count_stmt->execute();
-        $count_result = $count_stmt->get_result();
-        if ($row = $count_result->fetch_assoc()) {
-            $total_trips = (int)$row['total_trips'];
-        }
-        $count_stmt->close();
-
     } else {
         $error = "No booking found. Please check your details.";
     }

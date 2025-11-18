@@ -5,37 +5,14 @@ if ($conn->connect_error) {
 }
 
 if (isset($_POST['search'])) {
-    $id    = $_POST['search_value'];
+    $id = $_POST['search_value'];
     $email = $_POST['search_email'];
 
-    // 🔹 Count total bookings for this email (aggregate function)
-    $count_sql = "
-        SELECT COUNT(*) AS total_bookings
-        FROM booking b
-        JOIN makes m ON m.booking_id = b.booking_id
-        JOIN passenger p ON p.passenger_ID = m.passenger_ID
-        WHERE p.email = ?
-    ";
-    $stmt = $conn->prepare($count_sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $count_result = $stmt->get_result();
-    $total_bookings = 0;
-    if ($count_row = $count_result->fetch_assoc()) {
-        $total_bookings = (int)$count_row['total_bookings'];
-    }
-    $stmt->close();
-
-    // 🔹 Pass total bookings + email + id to viewbooking
-    header("Location: viewbooking.php?id=$id&email=$email&total=$total_bookings");
+    header("Location: viewbooking.php?id=$id&email=$email");
     exit();
 }
-
-// If user is redirected back here later and you want to show the message here instead,
-// you can also read it from GET (optional)
-$total_from_get = isset($_GET['total']) ? (int)$_GET['total'] : null;
-$email_from_get = $_GET['email'] ?? null;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,10 +34,10 @@ $email_from_get = $_GET['email'] ?? null;
         }
 
         body {
+            margin: 0;
             font-family: 'Cambria';
             background: linear-gradient(to right, var(--dark-blue), var(--second-blue));
-            padding: 50px;
-            margin-top: 60px;
+            padding: 0;
         }
 
         .video-bg {
@@ -84,29 +61,61 @@ $email_from_get = $_GET['email'] ?? null;
             backdrop-filter: blur(2px);
         }
 
+        /* ===== Navbar ===== */
+        nav {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;                 /* full width */
+            box-sizing: border-box;      /* include padding in width */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 5px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInDown 2.5s ease;
+            margin: 0;
+        }
+
+        nav h1 {
+            font-size: 24px;
+            color: white; /*#0161a5ff;#60a5fa;*/
+            font-weight: bold;
+            text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        nav a {
+            color: #e0f2fe;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        nav a:hover {
+            color: #a7d0ff;
+            font-weight: bold;
+        }
+
         h2 {
             text-align: center;
             font-family: "Libertinus Serif";
             color: var(--dark-blue);
             font-size: 35px;
-            margin-bottom: 20px;
+            margin-bottom: 45px;
         }
 
         .manage-container {
             max-width: 500px;
             background: var(--white-color-light);
             padding: 30px;
-            margin: 50px auto;
+            margin: 80px auto 50px auto; /* space below nav and centered */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(16, 91, 141, 0.4);
             color: var(--dark-blue);
-        }
-
-        .info-line {
-            text-align: center;
-            font-size: 14px;
-            color: var(--gray-colour);
-            margin-bottom: 20px;
         }
 
         label {
@@ -157,17 +166,19 @@ $email_from_get = $_GET['email'] ?? null;
     </video>
     <div class="overlay"></div>
 
+    <!-- Navbar -->
+    <nav>
+        <h1>✈️ SkyReserve</h1>
+        <div>
+            <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
+            <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
+            <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
+        </div>
+    </nav>
+
     <div class="manage-container">
         <form method="POST">
             <h2>Manage Your Booking</h2>
-
-            <?php if ($total_from_get !== null && $email_from_get): ?>
-                <p class="info-line">
-                    You have made <strong><?= htmlspecialchars($total_from_get) ?></strong>
-                    booking(s) with <strong><?= htmlspecialchars($email_from_get) ?></strong>.
-                </p>
-            <?php endif; ?>
-
             <label>Booking ID</label>
             <input type="text" name="search_value" placeholder="Enter your booking ID" required>
 
