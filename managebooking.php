@@ -66,8 +66,10 @@ if (isset($_POST['search'])) {
             position: relative;
             top: 0;
             left: 0;
-            width: 100%;                 /* full width */
-            box-sizing: border-box;      /* include padding in width */
+            width: 100%;
+            /* full width */
+            box-sizing: border-box;
+            /* include padding in width */
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -77,13 +79,18 @@ if (isset($_POST['search'])) {
             align-items: center;
             animation: fadeInDown 2.5s ease;
             margin: 0;
+            font-family: "Segoe UI", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
         }
 
         nav h1 {
             font-size: 24px;
-            color: white; /*#0161a5ff;#60a5fa;*/
+            color: white;
+            /*#0161a5ff;#60a5fa;*/
             font-weight: bold;
             text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.4);
+            font-family: "Segoe UI", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
         }
 
         nav a {
@@ -93,6 +100,8 @@ if (isset($_POST['search'])) {
             font-size: 16px;
             transition: 0.3s ease;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-family: "Segoe UI", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
         }
 
         nav a:hover {
@@ -112,7 +121,8 @@ if (isset($_POST['search'])) {
             max-width: 500px;
             background: var(--white-color-light);
             padding: 30px;
-            margin: 80px auto 50px auto; /* space below nav and centered */
+            margin: 80px auto 50px auto;
+            /* space below nav and centered */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(16, 91, 141, 0.4);
             color: var(--dark-blue);
@@ -170,6 +180,7 @@ if (isset($_POST['search'])) {
     <nav>
         <h1>✈️ SkyReserve</h1>
         <div>
+            <a href="http://localhost/SkyReserveARS/index.html">Home</a>
             <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
             <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
             <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
