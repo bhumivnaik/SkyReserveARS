@@ -6,11 +6,13 @@ if ($conn->connect_error) {
 
 $booking = null;
 $error = "";
+$total_trips = null; // 🔹 will store aggregate result
 
 if (isset($_GET['id']) && isset($_GET['email'])) {
     $id = $_GET['id'];
     $email = $_GET['email'];
 
+    // 🔹 1) Fetch this specific booking
     $sql = "SELECT b.*, p.email 
             FROM booking b
             JOIN makes m ON m.booking_id = b.booking_id
@@ -25,6 +27,22 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
 
     if ($result->num_rows > 0) {
         $booking = $result->fetch_assoc();
+
+        // 🔹 2) Aggregate: count total trips for this email
+        $count_sql = "SELECT COUNT(*) AS total_trips
+                      FROM booking b
+                      JOIN makes m ON m.booking_id = b.booking_id
+                      JOIN passenger p ON p.passenger_ID = m.passenger_ID
+                      WHERE p.email = ?";
+        $count_stmt = $conn->prepare($count_sql);
+        $count_stmt->bind_param("s", $email);
+        $count_stmt->execute();
+        $count_result = $count_stmt->get_result();
+        if ($row = $count_result->fetch_assoc()) {
+            $total_trips = (int)$row['total_trips'];
+        }
+        $count_stmt->close();
+
     } else {
         $error = "No booking found. Please check your details.";
     }
@@ -90,17 +108,22 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
             font-family: "Libertinus Serif";
             color: var(--dark-blue);
             font-size: 35px;
-            margin-bottom: 45px;
+            margin-bottom: 20px;
         }
 
-        /* Grid styling */
+        .info-line {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray-colour);
+            margin-bottom: 25px;
+        }
+
         .booking-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 22px;
         }
 
-        /* Each detail box */
         .detail-box {
             background: #eae8e8ff;
             border-radius: 12px;
@@ -122,7 +145,6 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
             letter-spacing: 0.7px;
         }
 
-        /* Values */
         .detail-value {
             font-size: 17px;
             font-weight: 700;
@@ -130,7 +152,6 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
             color: var(--gray-colour);
         }
 
-        /* Update Booking Button */
         .btn-update,
         .btn-delete {
             display: block;
@@ -157,8 +178,6 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
             background: linear-gradient(135deg, var(--dark-blue), var(--second-blue));
         }
 
-
-        /* Back button */
         .back-home {
             display: block;
             margin: 10px auto 0 auto;
@@ -176,7 +195,6 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
             letter-spacing: 0.5px;
         }
 
-        /* No result message */
         .no-result {
             text-align: center;
             font-size: 18px;
@@ -206,59 +224,65 @@ if (isset($_GET['id']) && isset($_GET['email'])) {
     </video>
     <div class="overlay"></div>
 
-
     <div class="manage-container">
 
         <h2>Your Booking Overview</h2>
 
         <?php if ($booking): ?>
 
+            <?php if ($total_trips !== null): ?>
+                <p class="info-line">
+                    You have taken <strong><?= htmlspecialchars($total_trips) ?></strong> trip(s)
+                    with <strong><?= htmlspecialchars($booking['email']) ?></strong>.
+                </p>
+            <?php endif; ?>
+
             <div class="booking-grid">
 
                 <div class="detail-box">
                     <div class="detail-title">Booking ID</div>
-                    <div class="detail-value"><?= $booking['booking_id'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['booking_id']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Date</div>
-                    <div class="detail-value"><?= $booking['date'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['date']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Status</div>
-                    <div class="detail-value"><?= $booking['status'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['status']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Flight ID</div>
-                    <div class="detail-value"><?= $booking['flight_id'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['flight_id']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Seats Booked</div>
-                    <div class="detail-value"><?= $booking['seatsbooked'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['seatsbooked']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Class</div>
-                    <div class="detail-value"><?= $booking['class_id'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['class_id']) ?></div>
                 </div>
 
                 <div class="detail-box">
                     <div class="detail-title">Email</div>
-                    <div class="detail-value"><?= $booking['email'] ?></div>
+                    <div class="detail-value"><?= htmlspecialchars($booking['email']) ?></div>
                 </div>
 
             </div>
 
             <div class="action-buttons">
-                <a class="btn-update" href="updatebooking.php?id=<?= $booking['booking_id'] ?>">Update Booking</a>
+                <a class="btn-update" href="updatebooking.php?id=<?= urlencode($booking['booking_id']) ?>">Update Booking</a>
                 <a class="btn-delete" href="deletebooking.php?booking_id=<?= urlencode($booking['booking_id']) ?>">Delete Booking</a>
             </div>
 
         <?php else: ?>
-            <p class="no-result"><?= $error ?></p>
+            <p class="no-result"><?= htmlspecialchars($error) ?></p>
         <?php endif; ?>
 
     </div>

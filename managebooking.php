@@ -5,14 +5,37 @@ if ($conn->connect_error) {
 }
 
 if (isset($_POST['search'])) {
-    $id = $_POST['search_value'];
+    $id    = $_POST['search_value'];
     $email = $_POST['search_email'];
 
-    header("Location: viewbooking.php?id=$id&email=$email");
+    // 🔹 Count total bookings for this email (aggregate function)
+    $count_sql = "
+        SELECT COUNT(*) AS total_bookings
+        FROM booking b
+        JOIN makes m ON m.booking_id = b.booking_id
+        JOIN passenger p ON p.passenger_ID = m.passenger_ID
+        WHERE p.email = ?
+    ";
+    $stmt = $conn->prepare($count_sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $count_result = $stmt->get_result();
+    $total_bookings = 0;
+    if ($count_row = $count_result->fetch_assoc()) {
+        $total_bookings = (int)$count_row['total_bookings'];
+    }
+    $stmt->close();
+
+    // 🔹 Pass total bookings + email + id to viewbooking
+    header("Location: viewbooking.php?id=$id&email=$email&total=$total_bookings");
     exit();
 }
-?>
 
+// If user is redirected back here later and you want to show the message here instead,
+// you can also read it from GET (optional)
+$total_from_get = isset($_GET['total']) ? (int)$_GET['total'] : null;
+$email_from_get = $_GET['email'] ?? null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,18 +89,24 @@ if (isset($_POST['search'])) {
             font-family: "Libertinus Serif";
             color: var(--dark-blue);
             font-size: 35px;
-            margin-bottom: 45px;
+            margin-bottom: 20px;
         }
 
         .manage-container {
             max-width: 500px;
             background: var(--white-color-light);
             padding: 30px;
-            background: var(--white-color-light);
             margin: 50px auto;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(16, 91, 141, 0.4);
             color: var(--dark-blue);
+        }
+
+        .info-line {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray-colour);
+            margin-bottom: 20px;
         }
 
         label {
@@ -128,10 +157,17 @@ if (isset($_POST['search'])) {
     </video>
     <div class="overlay"></div>
 
-
     <div class="manage-container">
         <form method="POST">
             <h2>Manage Your Booking</h2>
+
+            <?php if ($total_from_get !== null && $email_from_get): ?>
+                <p class="info-line">
+                    You have made <strong><?= htmlspecialchars($total_from_get) ?></strong>
+                    booking(s) with <strong><?= htmlspecialchars($email_from_get) ?></strong>.
+                </p>
+            <?php endif; ?>
+
             <label>Booking ID</label>
             <input type="text" name="search_value" placeholder="Enter your booking ID" required>
 
