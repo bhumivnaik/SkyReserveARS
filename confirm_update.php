@@ -82,7 +82,7 @@ $fields = [];
 $params = [];
 $types  = "";
 
-// --- UPDATE DATE ---
+
 if (!empty($new_date)) {
     $status = "Date Update Confirmed";
     $sql = "UPDATE booking SET date = ? ,status= ? WHERE booking_id = ?";
@@ -91,7 +91,6 @@ if (!empty($new_date)) {
     $stmt->execute();
 }
 
-// --- UPDATE CLASS ---
 if (!empty($new_class)) {
     $sql = "UPDATE booking SET class_id = ? WHERE booking_id = ?";
     $stmt = $conn->prepare($sql);

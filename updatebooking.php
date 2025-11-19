@@ -63,18 +63,17 @@ if ($booking && $step === 'select_flight' && isset($_GET['date_value']) && $_GET
     $route_stmt->close();
 
     if ($sourceAcode && $destAcode) {
-        // Now find all flights with same route that have instances on that date
         $flight_sql = "SELECT fi.f_instance_id, fi.flight_id, fi.departure_time, fi.arrival_time, fi.available_seats,f.flight_name, f.duration,
-    sa.city AS source_city,
-    da.city AS dest_city
-FROM flightinstance fi
-JOIN flight f ON fi.flight_id = f.flight_id
-JOIN airport sa ON f.sourceAcode = sa.acode
-JOIN airport da ON f.destAcode = da.acode
-WHERE fi.date = ? 
-  AND f.sourceAcode = ?
-  AND f.destAcode = ?
-  AND fi.available_seats >= ?";
+                       sa.city AS source_city,
+                       da.city AS dest_city
+                       FROM flightinstance fi
+                       JOIN flight f ON fi.flight_id = f.flight_id
+                       JOIN airport sa ON f.sourceAcode = sa.acode
+                       JOIN airport da ON f.destAcode = da.acode
+                       WHERE fi.date = ? 
+                        AND f.sourceAcode = ?
+                        AND f.destAcode = ?
+                        AND fi.available_seats >= ?";
         $seats_needed = $booking['seatsbooked']; // only show flights with enough seats
         $flight_stmt = $conn->prepare($flight_sql);
         $flight_stmt->bind_param("sssi", $selected_date, $sourceAcode, $destAcode, $seats_needed);

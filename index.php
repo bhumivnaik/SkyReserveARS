@@ -2,7 +2,6 @@
 $conn = new mysqli("localhost", "root", "", "airport");
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
-// Fetch all airports
 $airport_query = $conn->query("SELECT acode, city, aport_name FROM airport ORDER BY city ASC");
 $airports = [];
 while ($row = $airport_query->fetch_assoc()) {
