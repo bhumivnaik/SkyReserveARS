@@ -27,7 +27,6 @@ $qty           = (int)$oldData['qty'];
 $old_date      = $oldData['old_date'];
 
 
-// Get flight_id and some details from flightinstance + flight
 $flight_info = null;
 if ($f_instance_id) {
     $sql = "SELECT 
