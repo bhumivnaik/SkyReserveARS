@@ -326,7 +326,6 @@ tr:hover {
     </form>
 ";
 
-# ⭐ Show cheapest result if exists
 if ($cheapestResult) {
     echo "
     <div class='cheapest-box'>

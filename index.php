@@ -78,14 +78,16 @@ while ($row = $airport_query->fetch_assoc()) {
         }
 
         input[type="date"],
-        input[type="submit"] {
-            width: 93%;
+        input[type="submit"],
+        input[type="text"] {
+            width: 96%;
             padding: 8px;
             margin-top: 5px;
             margin-bottom: 15px;
             border-radius: 5px;
             border: 1px solid var(--second-blue);
             font-family: 'Cambria';
+            font-size: 13px;
             color: var(--gray-colour);
         }
 
@@ -114,46 +116,13 @@ while ($row = $airport_query->fetch_assoc()) {
             width: 100%;
         }
 
-        .select-selected {
-            background-color: var(--white-color-light);
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            color: var(--gray-colour);
-            border: 1px solid var(--second-blue);
-
-        }
-
-        .select-items {
-            position: absolute;
-            background-color: var(--white-color-light);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            z-index: 99;
-            width: 100%;
-            max-height: 150px;
-            overflow-y: auto;
-            display: none;
-        }
-
-        .select-items div {
-            padding: 8px;
-            cursor: pointer;
-        }
-
-        .select-items div:hover {
-            background-color: var(--second-blue);
-            color: var(--white-color-light);
-        }
-
         .city {
             font-weight: bold;
         }
 
         .airport {
             font-size: 12px;
-            color: #b5b5b5ff;
+            color: #a4a4a4ff;
         }
 
         .date-grid {
@@ -161,6 +130,56 @@ while ($row = $airport_query->fetch_assoc()) {
             grid-template-columns: repeat(2, 1fr);
             gap: 35px;
             margin-bottom: 25px;
+        }
+
+
+        .select-items {
+            position: absolute;
+            background: var(--white-color-light);
+            border: 1px solid var(--second-blue);
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 50;
+            border-radius: 5px;
+        }
+
+        .option {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .option:hover,
+        .option.highlight {
+            background: var(--second-blue);
+            color: white;
+        }
+
+
+
+
+        .select-selected {
+            background-color: var(--white-color-light);
+            padding: 10px;
+            border: 1px solid var(--second-blue);
+            border-radius: 5px;
+            min-height: 8px;
+            cursor: text;
+            color: var(--gray-colour);
+            outline: none;
+            font-size: 14px;
+        }
+
+        .select-items div {
+            padding: 8px;
+            cursor: pointer;
+            color: var(--dark-blue);
+        }
+
+        .select-items div:hover {
+            background-color: var(--second-blue);
+            color: white;
         }
     </style>
 
@@ -180,10 +199,12 @@ while ($row = $airport_query->fetch_assoc()) {
 
         <label>Source:</label>
         <div class="custom-select" id="sourceSelect">
-            <div class="select-selected">Select Source</div>
+            <div class="select-selected" contenteditable="true" style="text-transform: capitalize;">Select Source</div>
             <div class="select-items">
                 <?php foreach ($airports as $airport): ?>
-                    <div data-value="<?= $airport['city'] ?>">
+                    <div data-value="<?= $airport['city'] ?>"
+                        data-city="<?= strtolower($airport['city']) ?>"
+                        data-airport="<?= strtolower($airport['aport_name']) ?>">
                         <span class="city"><?= $airport['city'] ?></span><br>
                         <span class="airport"><?= $airport['aport_name'] ?></span>
                     </div>
@@ -194,10 +215,12 @@ while ($row = $airport_query->fetch_assoc()) {
 
         <label>Destination:</label>
         <div class="custom-select" id="destinationSelect">
-            <div class="select-selected">Select Destination</div>
+            <div class="select-selected" contenteditable="true" style="text-transform: capitalize;">Select Destination</div>
             <div class="select-items">
                 <?php foreach ($airports as $airport): ?>
-                    <div data-value="<?= $airport['city'] ?>">
+                    <div data-value="<?= $airport['city'] ?>"
+                        data-city="<?= strtolower($airport['city']) ?>"
+                        data-airport="<?= strtolower($airport['aport_name']) ?>">
                         <span class="city"><?= $airport['city'] ?></span><br>
                         <span class="airport"><?= $airport['aport_name'] ?></span>
                     </div>
@@ -206,6 +229,8 @@ while ($row = $airport_query->fetch_assoc()) {
             <input type="hidden" name="destination">
         </div>
 
+
+
         <!-- Dates -->
         <div class="date-grid">
             <div>
@@ -213,10 +238,7 @@ while ($row = $airport_query->fetch_assoc()) {
                 <input type="date" name="date">
 
             </div>
-            <div id="returnDiv">
-                <label>Return Date</label>
-                <input type="date" name="return_date">
-            </div>
+
         </div>
 
 
@@ -224,35 +246,53 @@ while ($row = $airport_query->fetch_assoc()) {
     </form>
 
     <script>
-        const radios = document.querySelectorAll('input[name="trip"]');
-        const returnDiv = document.getElementById('returnDiv');
-        radios.forEach(r => {
-            r.addEventListener('change', () => {
-                returnDiv.style.display = (r.value === 'twoway' && r.checked) ? 'block' : 'none';
-            });
-        });
-        returnDiv.style.display = 'none';
-
         function setupCustomSelect(selectId) {
             const select = document.getElementById(selectId);
             const selected = select.querySelector('.select-selected');
             const items = select.querySelector('.select-items');
             const input = select.querySelector('input');
 
+            // Open dropdown when clicking
             selected.addEventListener('click', () => {
-                items.style.display = items.style.display === 'block' ? 'none' : 'block';
+                items.style.display = "block";
+                selected.textContent = ""; // Clear typed placeholder
             });
 
-            items.querySelectorAll('div').forEach(div => {
-                div.addEventListener('click', () => {
-                    selected.innerHTML = div.innerHTML;
-                    input.value = div.dataset.value;
-                    items.style.display = 'none';
+            // Live search on typing
+            selected.addEventListener('input', () => {
+                const filter = selected.textContent.toLowerCase();
+
+                items.querySelectorAll('div').forEach(option => {
+                    const city = option.dataset.city;
+                    const airport = option.dataset.airport;
+
+                    if (city.includes(filter) || airport.includes(filter)) {
+                        option.style.display = "block";
+                    } else {
+                        option.style.display = "none";
+                    }
                 });
             });
 
+            // On selecting an item
+            items.querySelectorAll('div').forEach(option => {
+                option.addEventListener('click', () => {
+                    const city = option.dataset.value;
+                    const airport = option.querySelector('.airport').innerText;
+
+                    selected.innerHTML = `
+                <span class="city">${city}</span><br>
+                <span class="airport">${airport}</span>
+            `;
+                    input.value = city;
+
+                    items.style.display = "none";
+                });
+            });
+
+            // Close if clicking outside
             document.addEventListener('click', e => {
-                if (!select.contains(e.target)) items.style.display = 'none';
+                if (!select.contains(e.target)) items.style.display = "none";
             });
         }
 
