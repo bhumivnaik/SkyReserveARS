@@ -366,7 +366,7 @@ if ($flight_info) {
                     </div>
                 </div>
             <?php endif; ?>
-            <div class="back"> <a href="viewbooking.php">Back to Overview</a>
+            <div class="back"> <a href="managebooking.php">Back to Overview</a>
             </div>
         </div>
     </div>

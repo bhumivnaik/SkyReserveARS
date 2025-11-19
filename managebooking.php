@@ -181,7 +181,6 @@ if (isset($_POST['search'])) {
         <h1>✈️ SkyReserve</h1>
         <div>
             <a href="http://localhost/SkyReserveARS/index.html">Home</a>
-            <a href="http://localhost/SkyReserveARS/index.php">Search Flight</a>
             <a href="http://localhost/SkyReserveARS/managebooking.php">Manage Booking</a>
             <a href="http://localhost/SkyReserveARS/about_us.php">About Us</a>
         </div>
